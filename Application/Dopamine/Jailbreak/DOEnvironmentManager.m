@@ -524,12 +524,12 @@ extern char **environ;
 
 - (BOOL)isTweakInjectionEnabled
 {
-    return YES; // ВСЕГДА ВКЛЮЧЕНО
+    return YES;
 }
 
 - (void)setTweakInjectionEnabled:(BOOL)enabled
 {
-    // ТЕЛО МЕТОДА УДАЛЕНО, ЧТОБЫ НИКТО НЕ МОГ ОТКЛЮЧИТЬ ИНЪЕКЦИЮ
+    // Пустое тело, чтобы инъекцию нельзя было выключить
 }
 
 - (BOOL)isIDownloadEnabled

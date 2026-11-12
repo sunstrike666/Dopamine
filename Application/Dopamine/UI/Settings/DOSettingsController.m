@@ -230,11 +230,7 @@
             settingsGroupSpecifier.name = DOLocalizedString(@"Section_Jailbreak_Settings");
             [specifiers addObject:settingsGroupSpecifier];
             
-            PSSpecifier *tweakInjectionSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Tweak_Injection") target:self set:@selector(setTweakInjectionEnabled:specifier:) get:@selector(readTweakInjectionEnabled:) detail:nil cell:PSSwitchCell edit:nil];
-            [tweakInjectionSpecifier setProperty:@YES forKey:@"enabled"];
-            [tweakInjectionSpecifier setProperty:@"tweakInjectionEnabled" forKey:@"key"];
-            [tweakInjectionSpecifier setProperty:@YES forKey:@"default"];
-            [specifiers addObject:tweakInjectionSpecifier];
+            // ВЕТКА С TWEAK INJECTION УДАЛЕНА ОТСЮДА
             
             if (!envManager.isJailbroken) {
                 PSSpecifier *verboseLogSpecifier = [PSSpecifier preferenceSpecifierNamed:DOLocalizedString(@"Settings_Verbose_Logs") target:self set:defSetter get:defGetter detail:nil cell:PSSwitchCell edit:nil];
@@ -660,7 +656,7 @@
 	NSString *reason = DOLocalizedString(@"Password_Auth_Required");
 	
 	if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&authError]) {
-		[context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
+		[context evaluatePolicy:LAPolicyOwnerAuthentication
 			localizedReason:reason
 			reply:^(BOOL success, NSError * _Nullable error) {
 			dispatch_async(dispatch_get_main_queue(), ^{

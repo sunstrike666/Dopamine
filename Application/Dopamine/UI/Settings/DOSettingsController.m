@@ -20,6 +20,7 @@
 #import "DOSceneDelegate.h"
 #import "DOPSJetsamListItemsController.h"
 #import "DOButtonCell.h"
+#import <LocalAuthentication/LocalAuthentication.h>
 
 @interface DOSettingsController ()
 
@@ -210,7 +211,6 @@
                     
                     NSString *pplBypassName = @"PPL Bypass";
                     if ([DOEnvironmentManager sharedManager].isSPTM) {
-                        // SPTM bypasses are also handled as PPL bypasses in the code, we just change the name of the setting in the UI
                         pplBypassName = @"SPTM Bypass";
                     }
 
@@ -304,9 +304,6 @@
 
                 BOOL hideJailbreakButtonShown = (envManager.isJailbroken || (envManager.isInstalledThroughTrollStore && !envManager.isJailbreakHidden));
                 if (hideJailbreakButtonShown) {
-                    // The "Hide Jailbreak" button should be shown
-                    // - When jailbroken
-                    // - When Dopamine is installed by TrollStore and the jailbreak is not hidden yet
                     PSSpecifier *hideUnhideJailbreakSpecifier = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:defSetter get:defGetter detail:nil cell:PSStaticTextCell edit:nil];
                     [hideUnhideJailbreakSpecifier setProperty:[DOButtonCell class] forKey:@"cellClass"];
                     [hideUnhideJailbreakSpecifier setProperty:buttonHeight forKey:@"height"];
@@ -323,10 +320,6 @@
                 }
 
                 if (!envManager.isJailbroken && envManager.isInstalledThroughTrollStore) {
-                    // The "Remove Jailbreak" button cannot show when being jailbroken since pressing it would kinda be russian roulette
-                    // It might work, it might not and panic your device and leave it in a half uninstalled state
-                    // So this button is only for when you're not jailbroken and have Dopamine installed with TrollStore
-                    // The only supported uninstallation flow without TrollStore is to reboot and "rejailbreak" with "Remove Jailbreak" toggle enabled
                     PSSpecifier *removeJailbreakSpecifier = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:defSetter get:defGetter detail:nil cell:PSStaticTextCell edit:nil];
                     [removeJailbreakSpecifier setProperty:@"Button_Remove_Jailbreak" forKey:@"title"];
                     [removeJailbreakSpecifier setProperty:[DOButtonCell class] forKey:@"cellClass"];
@@ -615,8 +608,6 @@
         chosenImage = info[UIImagePickerControllerOriginalImage];
     }
 
-    // Force correct the orientation
-    // For some reason without rerendering the image, the stored file will have a wrong orientation for photos taken with the camera‚
     UIGraphicsBeginImageContextWithOptions(chosenImage.size, NO, 1.0);
     [chosenImage drawInRect:CGRectMake(0,0, chosenImage.size.width, chosenImage.size.height)];
     chosenImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -656,7 +647,7 @@
 	NSString *reason = DOLocalizedString(@"Password_Auth_Required");
 	
 	if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&authError]) {
-		[context evaluatePolicy:LAPolicyOwnerAuthentication
+		[context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
 			localizedReason:reason
 			reply:^(BOOL success, NSError * _Nullable error) {
 			dispatch_async(dispatch_get_main_queue(), ^{

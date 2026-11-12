@@ -524,24 +524,12 @@ extern char **environ;
 
 - (BOOL)isTweakInjectionEnabled
 {
-    return ![[NSFileManager defaultManager] fileExistsAtPath:JBROOT_PATH(@"/basebin/.safe_mode")];
+    return YES; // ВСЕГДА ВКЛЮЧЕНО
 }
 
 - (void)setTweakInjectionEnabled:(BOOL)enabled
 {
-    NSString *safeModePath = JBROOT_PATH(@"/basebin/.safe_mode");
-    if ([self isJailbroken]) {
-        [self runAsRoot:^{
-            [self runUnsandboxed:^{
-                if (enabled) {
-                    [[NSFileManager defaultManager] removeItemAtPath:safeModePath error:nil];
-                }
-                else {
-                    [[NSData data] writeToFile:safeModePath atomically:YES];
-                }
-            }];
-        }];
-    }
+    // ТЕЛО МЕТОДА УДАЛЕНО, ЧТОБЫ НИКТО НЕ МОГ ОТКЛЮЧИТЬ ИНЪЕКЦИЮ
 }
 
 - (BOOL)isIDownloadEnabled
